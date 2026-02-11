@@ -1,0 +1,15 @@
+version: "3.9"
+
+services:
+  comfy-model-daemon:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: comfy-model-daemon
+    volumes:
+      - ./daemon:/app/daemon
+      - ./daemon/cache:/app/daemon/cache
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+
