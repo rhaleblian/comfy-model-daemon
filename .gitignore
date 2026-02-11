@@ -17,3 +17,29 @@ daemon/cache/
 # Docker artifacts
 *.log
 
+# -------------------------
+# Project-specific
+# -------------------------
+daemon/cache/
+daemon/cache/state.json
+
+# -------------------------
+# Devcontainer + VS Code
+# -------------------------
+.vscode/
+.devcontainer/.cache/
+.devcontainer/.python_packages/
+
+# -------------------------
+# Docker
+# -------------------------
+*.pid
+*.seed
+*.pid.lock
+
+# -------------------------
+# OS-specific
+# -------------------------
+.DS_Store
+Thumbs.db
+
