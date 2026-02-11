@@ -1,0 +1,24 @@
+# Directories the daemon will watch for workflow changes
+watch_directories:
+  - "/app/daemon/workflows"
+
+# Local cache directory for downloaded models
+cache_directory: "/app/daemon/cache"
+
+# Model resolution endpoints
+model_sources:
+  - name: "civitai"
+    base_url: "https://civitai.com/api/download/models/"
+  - name: "huggingface"
+    base_url: "https://huggingface.co/"
+
+# Download behavior
+download:
+  retries: 3
+  backoff_seconds: 2
+  timeout_seconds: 30
+
+# Logging
+logging:
+  level: "INFO"
+

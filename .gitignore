@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.env/
+
+# Editor settings
+.vscode/
+.idea/
+
+# Local cache directory
+daemon/cache/
+
+# Docker artifacts
+*.log
+
