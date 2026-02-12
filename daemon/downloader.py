@@ -12,6 +12,7 @@ class ModelDownloader:
 
     def __init__(self, cache_dir: Path, retries: int, backoff: int, timeout: int):
         self.cache_dir = cache_dir
+
         self.retries = retries
         self.backoff = backoff
         self.timeout = timeout
@@ -46,4 +47,23 @@ class ModelDownloader:
                 tmp_path.rename(target)
                 logging.info(f"Downloaded model to {target}")
                 return
+            except Exception as e:
+                logging.warning(
+                    f"Download failed (attempt {attempt}/{self.retries}): {e}"
+                )
+                if attempt < self.retries:
+                    time.sleep(self.backoff)
 
+        logging.error(f"Failed to download model after {self.retries} attempts")
+
+    def _download(self, url: str, tmp_path: Path):
+        """
+        Perform the actual HTTP GET and stream to disk.
+        """
+        with requests.get(url, stream=True, timeout=self.timeout) as r:
+            r.raise_for_status()
+
+            with tmp_path.open("wb") as f:
+                for chunk in r.iter_content(chunk_size=8192):
+                    if chunk:
+                        f.write(chunk)
