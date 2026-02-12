@@ -1,5 +1,6 @@
 import json
 import logging
+import sys
 from pathlib import Path
 from typing import List
 
@@ -48,6 +49,22 @@ class WorkflowWatcher:
         except Exception as e:
             logging.error(f"Failed to parse workflow {path}: {e}")
             return
+        # Print visited nodes and models found to stderr for visibility
+        nodes = workflow.get("nodes", [])
+        visited = []
+        models_found = []
+
+        for idx, node in enumerate(nodes):
+            desc = node.get("id") or node.get("name") or node.get("type") or f"node_{idx}"
+            visited.append(str(desc))
+            model = node.get("inputs", {}).get("model")
+            if model:
+                models_found.append(str(model))
+
+        if visited:
+            print(f"Visited nodes: {', '.join(visited)}", file=sys.stderr)
+        if models_found:
+            print(f"Models found: {', '.join(models_found)}", file=sys.stderr)
 
         model_ids = self._extract_model_ids(workflow)
         logging.info(f"Workflow requires {len(model_ids)} models")
