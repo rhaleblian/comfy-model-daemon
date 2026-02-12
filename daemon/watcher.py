@@ -57,7 +57,7 @@ class WorkflowWatcher:
         for idx, node in enumerate(nodes):
             desc = node.get("id") or node.get("name") or node.get("type") or f"node_{idx}"
             visited.append(str(desc))
-            model = node.get("inputs", {}).get("model")
+            model = self._get_input_value(node, "model")
             if model:
                 models_found.append(str(model))
 
@@ -87,8 +87,41 @@ class WorkflowWatcher:
         model_ids = set()
 
         for node in workflow.get("nodes", []):
-            if "model" in node.get("inputs", {}):
-                model_ids.add(node["inputs"]["model"])
+            model = self._get_input_value(node, "model")
+            if model:
+                model_ids.add(model)
 
         return list(model_ids)
+
+    def _get_input_value(self, node: dict, key: str):
+        """
+        Safely extract a value for `key` from `node['inputs']`.
+        `inputs` may be a dict (map of names -> values) or a list (array of input
+        descriptors). Handle both cases and return the first matching value or
+        None when not found.
+        """
+        inputs = node.get("inputs")
+        if inputs is None:
+            return None
+
+        # If inputs is a mapping, use get
+        if isinstance(inputs, dict):
+            return inputs.get(key)
+
+        # If inputs is a list, try to find an element that contains the key
+        if isinstance(inputs, list):
+            for item in inputs:
+                if isinstance(item, dict):
+                    # direct key
+                    if key in item:
+                        return item[key]
+                    # common formats may wrap value under 'value' or 'default'
+                    if item.get("name") == key and "value" in item:
+                        return item["value"]
+                    if item.get("id") == key and "value" in item:
+                        return item["value"]
+            return None
+
+        # Unknown inputs structure
+        return None
 
