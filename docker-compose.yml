@@ -9,6 +9,7 @@ services:
     volumes:
       - ./daemon:/app/daemon
       - ./daemon/cache:/app/daemon/cache
+      - /Users/rayhaleblian/Developer/ComfyUI/user/default/workflows:/app/host_workflows
     environment:
       - PYTHONUNBUFFERED=1
     restart: unless-stopped

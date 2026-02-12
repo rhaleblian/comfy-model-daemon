@@ -1,6 +1,6 @@
 # Directories the daemon will watch for workflow changes
 watch_directories:
-  - "/app/daemon/workflows"
+  - "/app/host_workflows"
 
 # Local cache directory for downloaded models
 cache_directory: "/app/daemon/cache"
